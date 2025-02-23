@@ -1,0 +1,13 @@
+function PageLayout({ titleFr, titleEn, children }) {
+  const lang = "fr";
+  return (
+    <div>
+      <h1 className="page-title">{lang === "fr" ? titleFr : titleEn}</h1>;
+      <div className="page-wrapper">
+        <div className="page-content">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+export default PageLayout;

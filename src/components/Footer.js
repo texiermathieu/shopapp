@@ -1,7 +1,14 @@
+import { useContext } from "react";
+import ThemeContext from "../contexts/ThemeContext.js";
+
 function Footer() {
+  const {theme, setTheme} = useContext(ThemeContext);
+
   const lang = "fr";
   const handleChangeLanguage = () => {};
-  const handleToggleTheme = () => {};
+  const handleToggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
   return (
     <footer>
       <div className="footer-lang-switcher">

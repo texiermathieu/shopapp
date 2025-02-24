@@ -28,7 +28,7 @@ class ProductService {
 
         } catch(error) {
             console.error("Product API error :", error);
-            return [];
+            throw Error("Product API error :", error.message);
         }
     }
 }

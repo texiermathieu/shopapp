@@ -1,6 +1,7 @@
 import { create, StateCreator } from 'zustand'
 import ProductService from '../services/ProductService';
 import useShopStore from './shopStore';
+import { devtools } from 'zustand/middleware';
 
 const produitsToDisplay = [
   {
@@ -28,19 +29,38 @@ interface Product {
   title: string,
   description: string,
   price: number,
-  image: string
+  image: string,
+  stock?: {
+    quantity: {
+      value: number
+    }
+  }
+}
+
+interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+  quantity: number;
 }
 
 interface ProductState {
-  products: Product[]
+  products: Product[],
+  cartItems: CartItem[]
 }
 
 interface ProductActions {
-  getProducts: () => Promise<void>
+  getProducts: () => Promise<void>,
+  addToCart: (product: Product) => void;
+  removeFromCart: (id: number) => void;
+  updateQty: (type: "increment" | "decrement", id: number) => void;
+  resetCart: () => void;
 }
 
-const useProductStore  = create<ProductState & ProductActions>()((set, get) => ({
+const productStore: StateCreator<ProductState & ProductActions>  = (set, get) => ({
   products: [],
+  cartItems: [],
   getProducts: async () => {
     // console.log("get", get())
 
@@ -48,22 +68,102 @@ const useProductStore  = create<ProductState & ProductActions>()((set, get) => (
     useShopStore.getState().setIsLoading(true);
 
     // Effectuer un appel API pour aller chercher nos produits
-    const productList = await ProductService.getProductsFromApi();
+    try {
+      const productList = await ProductService.getProductsFromApi();
+      // console.log("getProducts", productList);
 
-    // console.log("getProducts", productList);
-    if(productList.lenght === 0 ){
-      // useShopStore.getState().setMessage({
-      //     'messageText' : "Erreur pendant le ca=hargement",
-      //   'type' : 'error',
-      // })
+      // Mettre loading à false
+      // Mise à jour du store
+      set({ products: productList })
+
+    } catch(error : any){
+      console.log(error)
+      useShopStore.getState().setMessage({
+        messageText: error.message,
+        type: "error"
+      })
+    } finally {
+      useShopStore.getState().setIsLoading(false);
+    } 
+
+  },
+  addToCart: (product: Product) => {
+    const productExistInCart = get().cartItems.filter(
+      (item) => item.id === product.id,
+    );
+    if (productExistInCart.length < 1) {
+      set(
+        {
+          cartItems: [
+            ...get().cartItems,
+            {
+              ...product,
+              quantity: 0,
+            }
+          ]
+        }
+      );
     }
+    get().updateQty("increment", product.id);
+    console.log("Product Added successfully");
+  },
+  removeFromCart: (id: number) => {
+    set(
+      {
+        cartItems: get().cartItems.filter((item) => item.id != id),
+      }
+    );
+    get().updateQty("decrement", id);
+    console.log("Le produit a été retiré");
+  },
+  updateQty: (type: "increment" | "decrement", id: number) => {
+    const item = get().cartItems.filter((item) => item.id === id);
+    if (typeof item === "undefined" || item.length < 1) return;
 
+    if (type === "decrement" && item[0].quantity === 1) {
+      set(
+        {
+          cartItems: get().cartItems.filter((item) => item.id != id),
+        }
+      );
+    } else {
+      const newQuantity: number =
+        type === "increment" ? item[0].quantity + 1 : item[0].quantity - 1;
+      const newItems = get().cartItems.map((item) =>
+        item.id !== id ? item : { ...item, quantity: newQuantity },
+      );
+      set({ cartItems: newItems });
+      console.log("The quantity has been updated");
+    }
+    // Update quantity for products list
+    const decrement = type === 'increment' ? -1 : 1;
+    const updatedProducts = get().products.map(product => {
+      if(product.id === id) {
+        return {
+          ...product,
+          stock: {
+            ...product.stock,
+            quantity: {
+              ...product?.stock?.quantity,
+              value:  (product.stock?.quantity?.value || 0)  + decrement
+            }
+          }
+        }
+      } else {
+        return product;
+      }
+    })
+    set({ products: updatedProducts })
+    
+  },
+  resetCart: () => set({ cartItems: [] }),
+});
 
-    // Mettre loading à false
-    // Mise à jour du store
-    set({ products: productList })
-    useShopStore.getState().setIsLoading(false);
-  }
-}))
+const useProductStore = create<ProductState & ProductActions>()(
+  devtools(
+    productStore
+  )
+  
+)
 
 export default useProductStore;

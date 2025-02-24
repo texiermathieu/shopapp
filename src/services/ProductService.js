@@ -1,32 +1,35 @@
-import useProductStore from "../store/productStore.ts";
-
-class ProductService{
+class ProductService {
     static getProductsFromApi = async () => {
-        // const productsList = [];
 
-        //Appel API
-        // const productsList = fetch(
-        //     "https://geoffreydelumeau.github.io/zustand-api/products/products.json"
-        // ).then(
-        //     res => {
-        //         return res.json();
-        //     }
-        // ).then(
-        //     data => {return data}
-        // ).catch(
-        //
-        // );
-        try{
-            const productsListJson = await  fetch(
-                "https://geoffreydelumeau.github.io/zustand-api/products/products.json"
+        try {
+
+            // Appel API
+            // const productList = fetch(
+            //     "https://geoffreydelumeau.github.io/zustand-api/products/products.json"
+            // ).then(
+            //     res => res.json()
+            // ).then(
+            //     data => {
+            //         return data
+            //     }
+            // );
+
+            // Fonction asynchrone !!!  => await
+            const productsListJson = await fetch(
+                    "https://geoffreydelumeau.github.io/zustand-api/products/products.json"
             );
+
+            // Fonction asynchrone !!!  => await
             const productsList = await productsListJson.json();
+
+            // console.log(productsList);
+
             return productsList;
-        }catch(error){
-            console.log('Product API error : '+error);
+
+        } catch(error) {
+            console.error("Product API error :", error);
             return [];
         }
-
     }
 }
 

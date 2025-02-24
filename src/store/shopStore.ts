@@ -1,16 +1,13 @@
-import { create, StateCreator } from 'zustand'
+import { create } from 'zustand'
 
-interface shopStore {
+interface ShopStore {
     isLoading: boolean,
-    setIsLoading : (value:boolean) => void
+    setIsLoading: (value: boolean) => void
 }
 
-
-
-const useShopStore  = create<shopStore>((set) => ({
-    isLoading : false,
-    setIsLoading:  (value:boolean) =>  set({isLoading:value }),
-
+const useShopStore = create<ShopStore>((set) => ({
+  isLoading: false,
+  setIsLoading: (value: boolean) => set({ isLoading: value })
 }))
 
 export default useShopStore;

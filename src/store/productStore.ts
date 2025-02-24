@@ -1,6 +1,6 @@
 import { create, StateCreator } from 'zustand'
-import ProductService from "../services/ProductService";
-import useShopStore from "./shopStore";
+import ProductService from '../services/ProductService';
+import useShopStore from './shopStore';
 
 const produitsToDisplay = [
   {
@@ -36,24 +36,26 @@ interface ProductState {
 }
 
 interface ProductActions {
-  getProducts: () => void
+  getProducts: () => Promise<void>
 }
 
 const useProductStore  = create<ProductState & ProductActions>()((set, get) => ({
-
   products: [],
   getProducts: async () => {
+    // console.log("get", get())
 
+    // Mettre isLoading à true
     useShopStore.getState().setIsLoading(true);
-      // set({isLoading:true});
+
     // Effectuer un appel API pour aller chercher nos produits
-      const productList = await  ProductService.getProductsFromApi();
+    const productList = await ProductService.getProductsFromApi();
+    // console.log("getProducts", productList);
 
+    // Mettre loading à false
     // Mise à jour du store
-    set({ products: productList})
+    set({ products: productList })
     useShopStore.getState().setIsLoading(false);
-  },
-
+  }
 }))
 
 export default useProductStore;

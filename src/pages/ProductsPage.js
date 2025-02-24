@@ -3,7 +3,7 @@ import PageLayout from "../components/PageLayout.js";
 import ProductCard from "../components/ProductCard.js";
 
 
-function ProductsPage() {
+function ProductsPage({setPage}) {
   const products = [];
 
   useEffect(function () {
@@ -12,6 +12,7 @@ function ProductsPage() {
 
   const handleCartClick = (event) => {
     event.preventDefault();
+    setPage('cart-page')
   };
 
   return (

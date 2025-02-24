@@ -8,6 +8,7 @@ import { useState } from "react";
 import ThemeContext from "./contexts/ThemeContext.js";
 import LanguageContext from "./contexts/LanguageContext.js";
 import { ThemeProvider } from "./contexts/ThemeContextHook.js";
+import Counter from "./components/Counter.js";
 
 export default function App() {
   const [page, setPage] = useState("products-page");
@@ -21,6 +22,7 @@ export default function App() {
         <div className="app">
           <Header setPage={setPage} />
           <Main>
+              <Counter />
               {
               (page === "products-page" && <ProductsPage setPage={setPage} />) ||
               (page === "login-page" && <LoginPage />) ||

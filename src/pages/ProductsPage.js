@@ -9,21 +9,19 @@ function ProductsPage({ setPage }) {
   // console.log(useProductStore())
 
   // Sans sélecteur
-  // const { products, getProducts } = useProductStore();
+  const { products, getProducts } = useProductStore();
   
   // Avec sélecteur (optimisation)
   // const products = useProductStore((state) => state.products);
   // const getProducts = useProductStore((state) => state.getProducts);
 
   // Avec sélecteur retournant un objet
-  const { products, getProducts } = useProductStore((state) => ({
-    products: state.products,
-    getProducts: state.getProducts
-  }));
+  // const { products, getProducts } = useProductStore((state) => ({
+  //   products: state.products,
+  //   getProducts: state.getProducts
+  // }));
 
-  useEffect(function () {
-    getProducts();
-  }, []);
+
   
 
   const handleCartClick = (event) => {

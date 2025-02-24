@@ -1,26 +1,28 @@
-import {create, createStore, StateCreator} from 'zustand';
+import { create, StateCreator } from 'zustand'
 
 interface Product {
-    id : string,
-    titles : string,
-    price: number,
-    image: string
+  id: string,
+  title: string,
+  price: number,
+  image: string
 }
 
-
-
-interface ProductState{
-    products : Product[]
+interface ProductState {
+  products: Product[]
 }
 
-interface ProductAction{
-    setProducts: () => void
+interface ProductActions {
+  setProducts: () => void
 }
 
-const useProductStore  = create<ProductState & ProductAction>()((set) => ({
-    products: [],
-    setProducts: () => set((state) => ({ products: [] })),
+const useProductStore  = create<ProductState & ProductActions>()((set) => ({
+  products: [],
+  setProducts: () => {
+    // Effectuer un appel API pour aller chercher nos produits
+
+    // Mise à jour du store
+    set((state) => ({ products: [] }))
+  },
 }))
-
 
 export default useProductStore;

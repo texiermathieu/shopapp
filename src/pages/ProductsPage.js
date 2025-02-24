@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import PageLayout from "../components/PageLayout.js";
 import ProductCard from "../components/ProductCard.js";
+import useProductStore from "../store/productStore.js";
 
 
-function ProductsPage({setPage}) {
-  const products = [];
+function ProductsPage({ setPage }) {
+  const { products } = useProductStore();
 
   useEffect(function () {
   }, []);
@@ -12,7 +13,7 @@ function ProductsPage({setPage}) {
 
   const handleCartClick = (event) => {
     event.preventDefault();
-    setPage('cart-page')
+    setPage("cart-page");
   };
 
   return (

@@ -22,7 +22,7 @@ export default function App() {
         <div className="app">
           <Header setPage={setPage} />
           <Main>
-              {/*<Counter />*/}
+              {/* <Counter /> */}
               {
               (page === "products-page" && <ProductsPage setPage={setPage} />) ||
               (page === "login-page" && <LoginPage />) ||

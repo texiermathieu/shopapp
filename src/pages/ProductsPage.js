@@ -5,18 +5,23 @@ import useProductStore from "../store/productStore.ts";
 
 
 function ProductsPage({ setPage }) {
-   const { products,getProducts } = useProductStore((state)=> state);
 
-  // const{products,getProducts} = useProductStore((state)=>(
-  //     {
-  //       products :state.products,
-  //       getProducts :state.getProducts,
-  //     }
-  // ));
+  // console.log(useProductStore())
 
+  // Sans sélecteur
+  // const { products, getProducts } = useProductStore();
+  
+  // Avec sélecteur (optimisation)
+  // const products = useProductStore((state) => state.products);
+  // const getProducts = useProductStore((state) => state.getProducts);
+
+  // Avec sélecteur retournant un objet
+  const { products, getProducts } = useProductStore((state) => ({
+    products: state.products,
+    getProducts: state.getProducts
+  }));
 
   useEffect(function () {
-
     getProducts();
   }, []);
   

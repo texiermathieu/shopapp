@@ -1,7 +1,6 @@
 {
   "name": "zustand-shop",
   "version": "0.1.0",
-  "homepage": "https://geoffrey.delumeau.github.io/zustand-shop",
   "private": false,
   "type": "module",
   "dependencies": {

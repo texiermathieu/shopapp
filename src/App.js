@@ -12,6 +12,7 @@ import Counter from "./components/Counter.js";
 import { BounceLoader } from "react-spinners";
 import useProductStore from "./store/productStore.ts";
 import useShopStore from "./store/shopStore.ts";
+import Message from "./components/Message.js";
 
 export default function App() {
   const [page, setPage] = useState("products-page");
@@ -19,6 +20,7 @@ export default function App() {
   const [ lang, setLang] = useState("fr");
   // const [isLoading, setIsLoading] = useState(true);
   const isLoading = useShopStore(state => state.isLoading);
+  const message = useShopStore(state => state.message);
   const getProducts = useProductStore((state) => state.getProducts);
 
   useEffect(function () {
@@ -34,6 +36,7 @@ export default function App() {
           <Header setPage={setPage} />
           <Main>
               {/* <Counter /> */}
+              { message && (<Message />)}
               { isLoading ? (<BounceLoader/>) : (
                 (page === "products-page" && <ProductsPage setPage={setPage} />) ||
                 (page === "login-page" && <LoginPage />) ||

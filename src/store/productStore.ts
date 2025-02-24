@@ -22,8 +22,9 @@ const produitsToDisplay = [
 ];
 
 interface Product {
-  id: string,
+  id: number,
   title: string,
+  description: string,
   price: number,
   image: string
 }
@@ -33,16 +34,16 @@ interface ProductState {
 }
 
 interface ProductActions {
-  setProducts: () => void
+  getProducts: () => void
 }
 
-const useProductStore  = create<ProductState & ProductActions>()((set) => ({
+const useProductStore  = create<ProductState & ProductActions>()((set, get) => ({
   products: [],
-  setProducts: () => {
+  getProducts: () => {
     // Effectuer un appel API pour aller chercher nos produits
-
+    console.log("get", get())
     // Mise à jour du store
-    set((state) => ({ products: [] }))
+    set({ products: produitsToDisplay })
   },
 }))
 

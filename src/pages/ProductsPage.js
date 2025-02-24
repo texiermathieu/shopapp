@@ -1,13 +1,28 @@
 import { useEffect } from "react";
 import PageLayout from "../components/PageLayout.js";
 import ProductCard from "../components/ProductCard.js";
-import useProductStore from "../store/productStore.js";
+import useProductStore from "../store/productStore.ts";
 
 
 function ProductsPage({ setPage }) {
-  const { products } = useProductStore();
+
+  // console.log(useProductStore())
+
+  // Sans sélecteur
+  // const { products, getProducts } = useProductStore();
+  
+  // Avec sélecteur (optimisation)
+  // const products = useProductStore((state) => state.products);
+  // const getProducts = useProductStore((state) => state.getProducts);
+
+  // Avec sélecteur retournant un objet
+  const { products, getProducts } = useProductStore((state) => ({
+    products: state.products,
+    getProducts: state.getProducts
+  }));
 
   useEffect(function () {
+    getProducts();
   }, []);
   
 

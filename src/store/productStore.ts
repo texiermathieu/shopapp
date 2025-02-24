@@ -49,7 +49,15 @@ const useProductStore  = create<ProductState & ProductActions>()((set, get) => (
 
     // Effectuer un appel API pour aller chercher nos produits
     const productList = await ProductService.getProductsFromApi();
+
     // console.log("getProducts", productList);
+    if(productList.lenght === 0 ){
+      // useShopStore.getState().setMessage({
+      //     'messageText' : "Erreur pendant le ca=hargement",
+      //   'type' : 'error',
+      // })
+    }
+
 
     // Mettre loading à false
     // Mise à jour du store

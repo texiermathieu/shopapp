@@ -20,7 +20,7 @@ export default function App() {
   // const [isLoading, setIsLoading] = useState(true);
   const isLoading = useShopStore(state => state.isLoading);
   const getProducts = useProductStore((state) => state.getProducts);
-
+const message = useShopStore(state=>state.message);
   useEffect(function () {
     getProducts();
   }, []);
@@ -34,7 +34,8 @@ export default function App() {
           <Header setPage={setPage} />
           <Main>
               {/* <Counter /> */}
-              { isLoading ? (<BounceLoader/>) : (
+            { message &&  (<Message />) }
+                { isLoading ? (<BounceLoader/>) : (
                 (page === "products-page" && <ProductsPage setPage={setPage} />) ||
                 (page === "login-page" && <LoginPage />) ||
                 (page === "cart-page" && <CardPage />)

@@ -6,24 +6,31 @@ import Footer from "./components/Footer.js";
 import LoginPage from "./pages/LoginPage.js";
 import { useState } from "react";
 import ThemeContext from "./contexts/ThemeContext.js";
+import LanguageContext from "./contexts/LanguageContext.js";
+import { ThemeProvider } from "./contexts/ThemeContextHook.js";
 
 export default function App() {
   const [page, setPage] = useState("products-page");
-  const [ theme, setTheme ] = useState("dark");
+  // const [ theme, setTheme ] = useState("dark");
+  const [ lang, setLang] = useState("fr");
 
   return (
-    <ThemeContext.Provider value={{theme, setTheme}}>
-      <div className="app">
-        <Header setPage={setPage} />
-        <Main>
-            {
-            (page === "products-page" && <ProductsPage setPage={setPage} />) ||
-            (page === "login-page" && <LoginPage />) ||
-            (page === "cart-page" && <CardPage />)
-          }
-        </Main>
-        <Footer />
-      </div>
-    </ThemeContext.Provider>
+    <LanguageContext.Provider value={{lang, setLang}}>
+      {/* <ThemeContext.Provider value={{theme, setTheme}}> */}
+      <ThemeProvider>
+        <div className="app">
+          <Header setPage={setPage} />
+          <Main>
+              {
+              (page === "products-page" && <ProductsPage setPage={setPage} />) ||
+              (page === "login-page" && <LoginPage />) ||
+              (page === "cart-page" && <CardPage />)
+            }
+          </Main>
+          <Footer />
+        </div>
+      </ThemeProvider>
+      {/* </ThemeContext.Provider> */}
+    </LanguageContext.Provider>
   );
 }

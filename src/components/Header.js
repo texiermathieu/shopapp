@@ -2,11 +2,13 @@ import { useContext, useState } from "react";
 import ReactLogo from "./logo.png"; // Import the image
 import CartIcon from "./CartIcon.js";
 import ThemeContext from "../contexts/ThemeContext.js";
+import { useTheme } from "../contexts/ThemeContextHook.js";
 
 function Header({ setPage }) {
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
 
-  const {theme} = useContext(ThemeContext);
+  // const {theme} = useContext(ThemeContext);
+  const { theme } = useTheme();
   const isAuthenticated = false;
   const user = {};
 

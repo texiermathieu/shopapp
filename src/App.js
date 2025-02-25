@@ -25,9 +25,12 @@ export default function App() {
 
   useEffect(function () {
     getProducts();
+    console.log("before", page)
+    setPage("ma-page");
+    console.log("after", page)
   }, []);
   
-
+  console.log("outside useeffect", page)
   return (
     <LanguageContext.Provider value={{lang, setLang}}>
       {/* <ThemeContext.Provider value={{theme, setTheme}}> */}

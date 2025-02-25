@@ -1,8 +1,12 @@
 import PageLayout from "../components/PageLayout.js";
+import useProductStore from "../store/productStore.ts";
+
+
 
 function CartPage() {
-  const items = [];
-
+  const items = useProductStore(state => state.cartItems);
+  const removeFromCart = useProductStore(state => state.removeFromCart)
+  const updateFromCart = useProductStore(state => state.updateQty)
   const subtotal =
     items instanceof Array
       ? items.reduce((total, item) => total + item.quantity * item.price, 0)
@@ -31,14 +35,14 @@ function CartPage() {
               <div className="cart-item-buttons">
                 <button
                   className="btn cart-item-edit-qty"
-                  onClick={() => {}}
+                  onClick={() => updateFromCart('decrement',item.id)}
                 >
                   -
                 </button>
                 <span className="cart-item-qty">{item.quantity}</span>
                 <button
                   className="btn cart-item-edit-qty"
-                  onClick={() => {}}
+                  onClick={() => updateFromCart('increment',item.id)}
                 >
                   +
                 </button>
@@ -46,7 +50,7 @@ function CartPage() {
             </div>
             <button
               className="btn cart-item-remove"
-              onClick={() => {}}
+              onClick={()=>removeFromCart(item.id)}
             >
               Retirer
             </button>

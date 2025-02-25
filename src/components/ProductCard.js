@@ -1,7 +1,11 @@
+import useProductStore from "../store/productStore.ts";
+
 function ProductCard({ product }) {
+  const addToCart = useProductStore(state => state.addToCart);
   const quantity = product.stock?.quantity?.value;
 
   const handleClick = () => {
+    addToCart(product);
   }
 
   return (

@@ -58,7 +58,7 @@ interface ProductActions {
   resetCart: () => void;
 }
 
-const productStore: StateCreator<ProductState & ProductActions>  = (set, get) => ({
+const productStore: StateCreator<ProductState & ProductActions, [["zustand/devtools", never]]>  = (set, get) => ({
   products: [],
   cartItems: [],
   getProducts: async () => {
@@ -74,7 +74,7 @@ const productStore: StateCreator<ProductState & ProductActions>  = (set, get) =>
 
       // Mettre loading à false
       // Mise à jour du store
-      set({ products: productList })
+      set({ products: productList }, false, "productStore/getProducts")
 
     } catch(error : any){
       console.log(error)
@@ -101,7 +101,7 @@ const productStore: StateCreator<ProductState & ProductActions>  = (set, get) =>
               quantity: 0,
             }
           ]
-        }
+        }, false, "productStore/addToCart"
       );
     }
     get().updateQty("increment", product.id);
@@ -111,7 +111,7 @@ const productStore: StateCreator<ProductState & ProductActions>  = (set, get) =>
     set(
       {
         cartItems: get().cartItems.filter((item) => item.id != id),
-      }
+      }, false, "productStore/removeFromCart"
     );
     get().updateQty("decrement", id);
     console.log("Le produit a été retiré");
@@ -123,8 +123,8 @@ const productStore: StateCreator<ProductState & ProductActions>  = (set, get) =>
     if (type === "decrement" && item[0].quantity === 1) {
       set(
         {
-          cartItems: get().cartItems.filter((item) => item.id != id),
-        }
+          cartItems: get().cartItems.filter((item) => item.id != id)
+        }, false, "productStore/updateQty"
       );
     } else {
       const newQuantity: number =
@@ -132,7 +132,7 @@ const productStore: StateCreator<ProductState & ProductActions>  = (set, get) =>
       const newItems = get().cartItems.map((item) =>
         item.id !== id ? item : { ...item, quantity: newQuantity },
       );
-      set({ cartItems: newItems });
+      set({ cartItems: newItems }, false, "productStore/updateQty");
       console.log("The quantity has been updated");
     }
     // Update quantity for products list
@@ -153,17 +153,16 @@ const productStore: StateCreator<ProductState & ProductActions>  = (set, get) =>
         return product;
       }
     })
-    set({ products: updatedProducts })
+    set({ products: updatedProducts }, false, "productStore/updateQty")
     
   },
-  resetCart: () => set({ cartItems: [] }),
+  resetCart: () => set({ cartItems: [] }, false, "productStore/resetCart"),
 });
 
 const useProductStore = create<ProductState & ProductActions>()(
   devtools(
     productStore
   )
-  
 )
 
 export default useProductStore;

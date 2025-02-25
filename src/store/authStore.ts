@@ -1,21 +1,20 @@
-import {create, StateCreator} from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { create, StateCreator } from "zustand"
+import { devtools } from "zustand/middleware"
 
-interface Adresse{
-    firstLine: string,
-    postCode: string,
+
+interface Address {
+    firstline: string,
+    postcode: string,
     city: string
 }
 
-
-interface User{
-    id: number,
-    firstName: string,
-    lastName: string,
+interface User {
+    id: number, 
+    firstname: string,
+    lastname: string, 
     email: string,
-    adress?: Adresse
+    address?: Address
 }
-
 
 interface AuthState {
     isAuthenticated: boolean,
@@ -32,7 +31,7 @@ const authStore: StateCreator<AuthState & AuthActions, [["zustand/devtools", nev
     isAuthenticated: false,
     token: undefined,
     user: undefined,
-    login: async (validateEmail: string, password: string) => {
+    login: async (email: string, password: string) => {
 
     },
     logout: () => {
@@ -41,7 +40,7 @@ const authStore: StateCreator<AuthState & AuthActions, [["zustand/devtools", nev
 })
 
 const useAuthStore = create<AuthState & AuthActions>()(
-    devtools(
-        authStore
-    )
-)
+    devtools(authStore)
+);
+
+export default useAuthStore;

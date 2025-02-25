@@ -28,7 +28,7 @@ interface AuthAction{
 }
 
 
-const AuthStore: StateCreator<AuthState & AuthAction , [['zustand/devtools',never)]> = (set,get) => ({
+const AuthStore: StateCreator<AuthState & AuthAction , [['zustand/devtools',never]]> = (set,get) => ({
     isAuthenticated: false,
     token: undefined,
     user: undefined,

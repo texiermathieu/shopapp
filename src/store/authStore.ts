@@ -1,10 +1,9 @@
 import { create, StateCreator } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import authLogger from "./authLogger"
-
 import customSessionStorage from "./storageAuth"
-import AuthService from "../services/AuthService";
-import useShopStore from "./shopStore";
+import AuthService from "../services/AuthService"
+import useShopStore from "./shopStore"
 
 
 interface Address {
@@ -37,23 +36,27 @@ const authStore: StateCreator<AuthState & AuthActions, [["zustand/devtools", nev
     token: undefined,
     user: undefined,
     login: async (email: string, password: string) => {
-
-        try{
-           const { user,token } = await AuthService.loginFromApi(email, password);
-           console.log(user);
-
-            useShopStore.getState().setMessage({'messageText':'Bienvenue  : '+user.firstname,'type':'info'});
-            set({token,user ,isAuthenticated:true}, false, "authStore/isAuthenticated");
-        }
-        catch(error){
-            console.log('Login error', error);
-            useShopStore.getState().setMessage({'messageText':'Login error : '+error,'type':'error'});
-            set({token: undefined,user: undefined ,isAuthenticated:false}, false, "authStore/isAuthenticated");
+        try {
+            const { user, token} = await AuthService.loginFromApi(email, password);
+            set({token, user, isAuthenticated: true})
+            useShopStore.getState().setMessage({
+                messageText: `Bienvenue ${user?.firstname}`,
+                type: "info"
+            })
+        } catch (error) {
+            set({token: undefined, user: undefined, isAuthenticated: false})
+            useShopStore.getState().setMessage({
+                messageText: `Login error : ${error}`,
+                type: "error"
+            })
         }
     },
     logout: () => {
-        set({token: undefined,user: undefined ,isAuthenticated:false}, false, "authStore/isAuthenticated");
-        useShopStore.getState().setMessage({'messageText':'Disconnection succesful','type':'info'})
+        set({token: undefined, user: undefined, isAuthenticated: false})
+        useShopStore.getState().setMessage({
+            messageText: "Disconnection successful",
+            type: "info"
+        })
     }
 })
 

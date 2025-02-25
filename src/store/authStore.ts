@@ -4,6 +4,7 @@ import authLogger from "./authLogger"
 import customSessionStorage from "./storageAuth"
 import AuthService from "../services/AuthService"
 import useShopStore from "./shopStore"
+import useProductStore from "./productStore"
 
 
 interface Address {
@@ -38,7 +39,7 @@ const authStore: StateCreator<AuthState & AuthActions, [["zustand/devtools", nev
     login: async (email: string, password: string) => {
         try {
             const { user, token} = await AuthService.loginFromApi(email, password);
-            set({token, user, isAuthenticated: true})
+            set({token, user, isAuthenticated: true}, false, "authStore/login")
             useShopStore.getState().setMessage({
                 messageText: `Bienvenue ${user?.firstname}`,
                 type: "info"
@@ -52,11 +53,13 @@ const authStore: StateCreator<AuthState & AuthActions, [["zustand/devtools", nev
         }
     },
     logout: () => {
-        set({token: undefined, user: undefined, isAuthenticated: false})
+        set({token: undefined, user: undefined, isAuthenticated: false}, false, "authStore/logout")
         useShopStore.getState().setMessage({
             messageText: "Disconnection successful",
             type: "info"
         })
+        // Vider le panier
+        useProductStore.getState().resetCart();
     }
 })
 

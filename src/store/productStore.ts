@@ -2,6 +2,7 @@ import { create, StateCreator } from 'zustand'
 import ProductService from '../services/ProductService';
 import useShopStore from './shopStore';
 import { devtools } from 'zustand/middleware';
+import { produce } from 'immer';
 
 const produitsToDisplay = [
   {
@@ -30,7 +31,7 @@ interface Product {
   description: string,
   price: number,
   image: string,
-  stock?: {
+  stock: {
     quantity: {
       value: number
     }
@@ -93,7 +94,7 @@ const productStore: StateCreator<ProductState & ProductActions, [["zustand/devto
     );
     if (productExistInCart.length < 1) {
       set(
-        {
+        (state) => ({
           cartItems: [
             ...get().cartItems,
             {
@@ -101,7 +102,7 @@ const productStore: StateCreator<ProductState & ProductActions, [["zustand/devto
               quantity: 0,
             }
           ]
-        }, false, "productStore/addToCart"
+        }), false, "productStore/addToCart"
       );
     }
     get().updateQty("increment", product.id);
@@ -137,23 +138,32 @@ const productStore: StateCreator<ProductState & ProductActions, [["zustand/devto
     }
     // Update quantity for products list
     const decrement = type === 'increment' ? -1 : 1;
-    const updatedProducts = get().products.map(product => {
-      if(product.id === id) {
-        return {
-          ...product,
-          stock: {
-            ...product.stock,
-            quantity: {
-              ...product?.stock?.quantity,
-              value:  (product.stock?.quantity?.value || 0)  + decrement
-            }
-          }
-        }
-      } else {
-        return product;
+    // const updatedProducts = get().products.map(product => {
+    //   if(product.id === id) {
+    //     return {
+    //       ...product,
+    //       stock: {
+    //         ...product.stock,
+    //         quantity: {
+    //           ...product?.stock?.quantity,
+    //           value:  (product.stock?.quantity?.value || 0)  + decrement
+    //         }
+    //       }
+    //     }
+    //   } else {
+    //     return product;
+    //   }
+    // })
+    // set({ products: updatedProducts }, false, "productStore/updateQty")
+
+    set( produce(
+      (draft: ProductState) => {
+        const productToUpdate = draft.products.find(product => product.id === id);
+        if(productToUpdate) {
+          productToUpdate.stock.quantity.value = (productToUpdate?.stock?.quantity.value || 0) + decrement
+        };
       }
-    })
-    set({ products: updatedProducts }, false, "productStore/updateQty")
+    ))
     
   },
   resetCart: () => set({ cartItems: [] }, false, "productStore/resetCart"),

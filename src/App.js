@@ -30,7 +30,7 @@ export default function App() {
     // console.log("after", page)
   }, []);
   
-  // console.log("outside useeffect", page)
+  // console.log("outside Render component", page)
   return (
     <LanguageContext.Provider value={{lang, setLang}}>
       {/* <ThemeContext.Provider value={{theme, setTheme}}> */}

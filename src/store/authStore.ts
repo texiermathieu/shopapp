@@ -1,20 +1,25 @@
-import {create, StateCreator} from 'zustand';
+import { create, StateCreator } from "zustand"
+import { createJSONStorage, devtools, persist } from "zustand/middleware"
+import authLogger from "./authLogger"
 
-interface Adresse{
-    firstLine: string,
-    postCode: string,
+import customSessionStorage from "./storageAuth"
+import AuthService from "../services/AuthService";
+import useShopStore from "./shopStore";
+
+
+interface Address {
+    firstline: string,
+    postcode: string,
     city: string
 }
 
-
-interface User{
-    id: number,
-    firstName: string,
-    lastName: string,
+interface User {
+    id: number, 
+    firstname: string,
+    lastname: string, 
     email: string,
-    adress?: Adresse
+    address?: Address
 }
-
 
 interface AuthState {
     isAuthenticated: boolean,
@@ -22,22 +27,56 @@ interface AuthState {
     user?: User
 }
 
-interface AuthAction{
-    login: (email: string,password:string) => Promise<void>,
+interface AuthActions {
+    login: (email: string, password: string) => Promise<void>,
     logout: () => void
 }
 
-
-const AuthStore: StateCreator<AuthState & AuthAction , [['zustand/devtools',never]]> = (set,get) => ({
+const authStore: StateCreator<AuthState & AuthActions, [["zustand/devtools", never]]> = (set, get) => ({
     isAuthenticated: false,
     token: undefined,
     user: undefined,
-    login: (email:string,password: string)  => {
+    login: async (email: string, password: string) => {
 
+        try{
+           const { user,token } = await AuthService.loginFromApi(email, password);
+           console.log(user);
+
+            useShopStore.getState().setMessage({'messageText':'Bienvenue  : '+user.firstname,'type':'info'});
+            set({token,user ,isAuthenticated:true}, false, "authStore/isAuthenticated");
+        }
+        catch(error){
+            console.log('Login error', error);
+            useShopStore.getState().setMessage({'messageText':'Login error : '+error,'type':'error'});
+            set({token: undefined,user: undefined ,isAuthenticated:false}, false, "authStore/isAuthenticated");
+        }
     },
-    logout : () => {
-
+    logout: () => {
+        set({token: undefined,user: undefined ,isAuthenticated:false}, false, "authStore/isAuthenticated");
+        useShopStore.getState().setMessage({'messageText':'Disconnection succesful','type':'info'})
     }
 })
 
-const useAuthStore = create<AuthStore & AuthAction>
+const useAuthStore = create<AuthState & AuthActions>()(
+    persist(
+        authLogger(
+            devtools(authStore)
+        ),
+        {
+            name: 'auth-storage', // unique name
+            storage: createJSONStorage(() => customSessionStorage),
+            // onRehydrateStorage: (state) => {
+            //   console.log('hydration starts')
+            //   return (state, error) => {
+            //     if (error) {
+            //       console.log('hydration error:', error)
+            //     } else {
+            //       console.log('hydration finished')
+            //     }
+            //   }
+            // }
+          },
+    )
+);
+
+export default useAuthStore;

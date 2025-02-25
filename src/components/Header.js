@@ -3,14 +3,17 @@ import ReactLogo from "./logo.png"; // Import the image
 import CartIcon from "./CartIcon.js";
 import ThemeContext from "../contexts/ThemeContext.js";
 import { useTheme } from "../contexts/ThemeContextHook.js";
+import authStore from "../store/authStore.ts";
+import useAuthStore from "../store/authStore.ts";
 
 function Header({ setPage }) {
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
-
+  const logout = authStore(state => state.logout);
+  const user = useAuthStore(state=> state.user);
   // const {theme} = useContext(ThemeContext);
   const { theme } = useTheme();
   const isAuthenticated = false;
-  const user = {};
+  // const user = {};
 
   const handleToggleDropdown = () => {
     setIsDropDownOpen(!isDropdownOpen);

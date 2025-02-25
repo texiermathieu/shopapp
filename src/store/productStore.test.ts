@@ -68,10 +68,10 @@ describe("useProductStore", () => {
             // })
 
             // Mocker le shop store
-            const mockSetMessage = jest.fn();
-            useShopStore.mockReturnValue({
-                setMessage: mockSetMessage
-            })
+            // const mockSetMessage = jest.fn();
+            // useShopStore.mockReturnValue({
+            //     setMessage: mockSetMessage
+            // })
         })
         test("Récupération des produits", async () => {
             // GRAVE erreur : ne pas tester trop loin de notre élément cible

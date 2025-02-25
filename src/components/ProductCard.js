@@ -6,6 +6,7 @@ function ProductCard({ product }) {
 
   const handleClick = () => {
     addToCart(product);
+
   }
 
   return (
